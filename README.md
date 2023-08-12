@@ -256,3 +256,9 @@ url 'detail' -> url 'polls:detail'
 
 
 # part4. 表單處理
+
+## 4.1表单
+## 4.2使用通用视图
+改良 URLconf¶
+改良视图¶
+
