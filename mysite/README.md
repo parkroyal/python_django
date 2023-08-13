@@ -6,7 +6,7 @@ pip install django
 
 django-admin startproject mysite
 
-py manage.py startapp polls
+python manage.py startapp polls
 
 polls 
 admin.py : 設定資料庫呈現的模式，之後會跟models溝通
@@ -189,6 +189,8 @@ def index(request):
 ```
 
 ### 3.2 增加template資料夾
+
+樣板名稱為什麼還要再多一層資料夾呢？因為Django在尋找應用程式的Template(樣板)時，會依據專案主程式下的settings.py，其中的INSTALLED_APPS的順序來進行尋找，所以我們必須要讓Django知道我們要使用的是polls應用程式下的templates資料夾，而不是mysite下的templates資料夾，所以我們必須要在polls下再建立一個templates資料夾，這樣Django才會知道我們要使用的是polls下的templates資料夾。
 mysite\polls\templates\polls\index.html
 ```
 {% if latest_question_list %}
@@ -262,3 +264,50 @@ url 'detail' -> url 'polls:detail'
 改良 URLconf¶
 改良视图¶
 
+
+
+# part5. 增加user 註冊
+python manage.py startapp users 
+
+INSTALLED_APPS = [
+    "users.apps.UsersConfig",  
+]
+
+## 5.1 views
+### 註冊function
+```python
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            return redirect('blog-home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'users/register.html', {'form': form})
+```
+
+### 5.2 urls 
+```python
+path('register/', user_views.register, name='register'),
+```
+
+### 5.3 forms
+users/forms.py
+```python
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
+```
+
+### 5.4 templates
