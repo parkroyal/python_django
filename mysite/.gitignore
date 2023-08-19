@@ -24,3 +24,5 @@ hand_over/**/*.xlsx
 *.sqlite
 /mysite/*.sqlite3
 *.db
+config.json
+/package/*
